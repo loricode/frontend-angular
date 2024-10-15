@@ -1,0 +1,16 @@
+.container-main {
+   flex-grow: 1;
+   display: flex;
+}
+
+.container-dash {
+   display: flex;
+   flex-direction: column;
+   height: 100dvh;
+}
+
+.container-pages{
+   width: 100%;
+   max-height: calc(100dvh - 120px);
+   overflow-y: auto;
+}
