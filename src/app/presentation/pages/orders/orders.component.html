@@ -1,0 +1,27 @@
+<!-- <nav class="flex p-2 justify-end items-center">
+ 
+      <button
+        type="button"
+        (click)="goBack()"
+        class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+      >
+        Regresar
+      </button>
+    
+</nav> -->
+
+<section class="home flex justify-center flex-col items-center gap-4 mt-4 mb-4">
+  @for (item of getStateOrders(); track $index) {
+  <div
+    class="card p-6 h-auto flex flex-col justify-center items-center bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-white"
+  >
+    <p class="paragraph">Nombre: {{ item.name }}</p>
+    <p class="paragraph">Nit: {{ item.nit }}</p>
+    <p class="paragraph">Dir: {{ item.address }}</p>
+    <p class="paragraph">Correo: {{ item.email }}</p>
+    
+  </div>
+
+  }
+  <div></div>
+</section>

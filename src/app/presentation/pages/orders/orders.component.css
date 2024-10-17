@@ -1,0 +1,11 @@
+.home{
+   flex-grow: 1;
+}
+
+.card{
+   min-width: 372px;
+}
+
+.paragraph{
+   @apply text-left w-full mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-800;
+}

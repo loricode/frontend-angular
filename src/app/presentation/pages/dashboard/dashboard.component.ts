@@ -13,5 +13,5 @@ import { FooterComponent } from '../../components/footer/footer.component';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-
+  
 }
