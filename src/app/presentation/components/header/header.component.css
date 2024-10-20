@@ -1,0 +1,13 @@
+.container {
+   display: flex;
+   gap:16px;
+   align-items: center;
+   justify-content: space-around;
+   padding: 0px 36px 0px 40px;
+   height: 160px;
+}
+
+ .titleHeader {
+   color: #fff;
+   font-size: 30px
+}
