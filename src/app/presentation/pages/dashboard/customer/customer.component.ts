@@ -91,6 +91,5 @@ export class CustomerComponent {
 
    public getColorAvatar = (text:string) => { 
     return { 'background-color': stringToColor(text) }
-
    }
 }

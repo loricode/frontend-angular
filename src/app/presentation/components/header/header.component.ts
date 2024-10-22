@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
 })
 export class HeaderComponent {
 
-  headerIconApp = '../../../../assets/headerIconApp.svg'
+  headerIconApp = '../../../../assets/imagen.jpeg'
 
    headerStyle = {
     "background-image": `url({../../../../assets/banner.svg)`,

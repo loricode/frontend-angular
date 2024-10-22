@@ -1,1 +1,249 @@
-<p>orders works!</p>
+<div class="flex items-center justify-center">
+  <div class="container-option">
+    <app-header-option></app-header-option>
+
+    <div class="flex justify-between items-center flex-wrap">
+      <div>
+        <h2 class="text-3xl font-bold">Ordenes</h2>
+      </div>
+
+      <div class="flex justify-center items-center gap-3">
+        <app-search />
+
+        <button
+          (click)="openModalNewOrder()"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          Nuevo orden
+        </button>
+      </div>
+    </div>
+
+    <section
+      class="flex justify-center sm:justify-center md:justify-stretch items-center flex-wrap gap-2 pt-4"
+    >
+      @for (item of listOrders; track $index) {
+      <div
+        class="shadow-md w-full overflow-hidden md:w-64 rounded-md p-2 sm:w-full card-item"
+      >
+        <div class="flex gap-2 items-center justify-between">
+          <div>
+            <p class="font-bold" title="{{ item.title }}">
+              {{ item.title }}
+            </p>
+            <div class="flex items-center justify-stretch gap-1">
+              <p class="text-sm font-semibold">{{ item.description }}</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-stretch gap-1">
+            <img
+              (click)="handleModalOrder()"
+              class="w-6 cursor-pointer"
+              src="../../../../../assets/assignment_turned_in.svg"
+              alt="In"
+            />
+          </div>
+        </div>
+      </div>
+      }
+    </section>
+  </div>
+
+  <!-- Modal  -->
+
+  @if (isOrderOpen) {
+  <div
+    class="relative z-10"
+    aria-labelledby="modal-title"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+      aria-hidden="true"
+    ></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div
+        class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+      >
+        <div
+          class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+        >
+          <div class="bg-white px-3 pb-4 pt-5 sm:p-6 sm:pb-4">
+            <div>
+              <div class="flex items-center justify-between">
+                <h2
+                  class="flex-grow-1 text-xl sm:text-left font-semibold leading-6 text-gray-900"
+                  id="modal-title"
+                >
+                {{ isCreate ? 'Crear' : 'Asignar' }} orden
+                </h2>
+
+                <div>
+                  <button
+                   (click)="handleModalOrder()"
+                    title="Cerrar"
+                    class="bg-gray-200 px-3 py-3 hover:bg-gray-300 text-gray-800 font-bold rounded-full inline-flex items-center"
+                  >
+                    <img src="../../../../../assets/close.svg" alt="x" />
+                  </button>
+                </div>
+              </div>
+              <div class="mt-3 text-center sm:mt-0">
+                <div class="mt-2">
+                  <form
+                    class="flex items-center justify-center flex-col gap-2"
+                    [formGroup]="form"
+                  >
+                  
+                   @if (isCreate) {
+                    <div class="w-full">
+                    <input
+                     class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                     placeholder="Titulo"
+                     formControlName="titleField"
+                     required
+                   />
+                   </div>
+
+                   <div class="w-full">
+                   <textarea
+                   class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   placeholder="Titulo"
+                   formControlName="descriptionField"
+                   required
+                 ></textarea>
+                 </div>
+
+                   } @else {
+                    <input
+                    disabled
+                    class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    [value]="orderDescription"
+                    required
+                  />
+                   }
+
+                    <div class="w-full flex items-center justify-center gap-3">
+                      <input
+                        class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Identificación"
+                        formControlName="nameField"
+                        required
+                      />
+
+                      <input
+                        class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Nombre"
+                        formControlName="identificationField"
+                        required
+                      />
+
+                      <div>
+                        <button
+                          class="bg-blue-700 px-4 py-4 hover:bg-blue-800 text-gray-800 font-bold rounded-full inline-flex items-center"
+                        >
+                          <svg
+                            class="w-4 h-4 text-white dark:text-white"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h2 class="text-2xl font-bold">Técnicos</h2>
+                    </div>
+
+                    <section
+                      class="overflow-y-auto max-h-80 scroll-py-4 pt-48 gap-3 w-full pb-5 flex justify-center sm:justify-center items-center flex-col"
+                    >
+                      @for (item of listTechnicians; track $index) {
+                      <div class="shadow-md w-full rounded-md px-2 card-item">
+                        <div class="flex gap-2 items-center justify-between">
+                          <div class="flex gap-2 items-center">
+                            <div
+                              [style]="getColorAvatar(item.fullName)"
+                              class="inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full"
+                            >
+                              <span
+                                class="font-medium text-gray-600 dark:text-gray-300"
+                                >{{ getStringAvatar(item.fullName) }}</span
+                              >
+                            </div>
+
+                            <div>
+                              <p class="font-bold" title="{{ item.fullName }}">
+                                {{ item.fullName }}
+                              </p>
+                              <div
+                                class="flex items-center justify-stretch gap-1"
+                              >
+                                <img
+                                  class="w-4"
+                                  src="../../../../../assets/id_card.svg"
+                                  alt="Id"
+                                />
+                                <p class="text-sm font-semibold">
+                                  {{ item.identification }}
+                                </p>
+                              </div>
+
+                              <div
+                                class="flex items-center justify-stretch gap-1"
+                              >
+                                <img
+                                  class="w-4"
+                                  src="../../../../../assets/phone.svg"
+                                  alt="Tel"
+                                />
+                                <p class="text-sm font-semibold">
+                                  {{ item.phone }}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <div class="flex items-center">
+                              <input
+                                checked
+                                id="checked-checkbox"
+                                type="checkbox"
+                                value=""
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                              />
+                              <label
+                                for="checked-checkbox"
+                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                >Asignado</label
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      }
+                    </section>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
