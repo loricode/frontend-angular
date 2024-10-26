@@ -24,7 +24,7 @@
     >
       @for (item of listCustomers; track $index) {
       <div
-        class="shadow-md w-full overflow-hidden md:w-64 rounded-md p-2 sm:w-full card-item"
+        class="shadow-md overflow-hidden rounded-md card-item"
       >
         <div class="flex gap-2 items-center">
           <div>
@@ -38,7 +38,7 @@
             </div>
           </div>
 
-          <div>
+          <div class="flex-1">
             <p class="font-bold" title="{{ item.fullName }}">
               {{ item.fullName }}
             </p>
@@ -53,14 +53,62 @@
                {{ item.phone }}
              </p>
             </div>
+
           </div>
+
+          <div class="flex items-center justify-center gap-1 mr-1">
+
+            <div (click)="edit(item)" class="rounded-full hover:bg-slate-300 bg-slate-200 p-2">
+              <img src="../../../../../assets/edit.svg" alt="E">
+            </div>
+
+            <div (click)="setDeleteRecocord(item)" class="rounded-full hover:bg-slate-300 bg-slate-200 p-2">
+              <img src="../../../../../assets/delete.svg" alt="D">
+            </div>
+
+          </div>
+
         </div>
+
       </div>
       }
     </section>
   </div>
 
   <!-- Modal  -->
+  @if (isOpenModalDelete) {
+    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" >
+   
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+  
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        
+        <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+          <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+            <div>
+              
+              <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                <h2 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">
+                   Eliminar
+                </h2>
+                <div class="mt-2">
+                   Desea eliminar el regristro
+                  <p class="font-bold">{{description}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+             <button (click)="deleteRecord()" class="inline-flex w-full justify-center rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 sm:ml-3 sm:w-auto">Aceptar</button>
+             <button  (click)="isOpenModalDelete = false" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+   }
+
 
   @if (isOpen) {
    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" >
