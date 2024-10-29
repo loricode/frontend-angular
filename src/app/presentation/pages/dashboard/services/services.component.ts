@@ -1,4 +1,6 @@
 import { Component, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 //components
 import { HeaderOptionComponent } from '../../../components/header-option/header-option.component';
@@ -6,56 +8,49 @@ import { SearchComponent } from '../../../components/search/search.component';
 
 //utils
 import { stringAvatar, stringToColor } from '../../../utils';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+
+
+//services
+import { OrdersService } from '../../../../data/orders/orders.service';
+
+//domain
+import { Order } from '../../../../domain/interfaces/orders';
+import { ServicesFilterPipe } from '../../../../data/filters/services-filter.pipe';
+
+
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [ReactiveFormsModule, HeaderOptionComponent, SearchComponent],
+  imports: [DatePipe, ReactiveFormsModule, HeaderOptionComponent, SearchComponent],
   templateUrl: './services.component.html',
   styleUrl: './services.component.css'
 })
 export class ServicesComponent {
 
   isOpen = false;
+  selectedDate = new FormControl('');
+  private ordersService = inject(OrdersService);
+  filterText = 'Asignada'+',' + new Date().toISOString().split('T')[0];
+  tempText = 'Asignada';
+  selectStatus= new FormControl('Asignada');
+  listOrders: Order[] = [];
 
-  private fb = inject(FormBuilder);
- 
-  form = this.fb.group({
-    'nameField': [''],
-    'nitField':[''],
-    'addressField':[''],
-    'emailField':[''],
-    'phoneField':['']
-  }) 
+  ngOnInit(): void {
+    this.selectedDate.setValue(new Date().toISOString().split('T')[0])
+    this.getList();
+  }
 
-  listTechnicians = [
-    { 
-     id:'1',
-     title:'42355436',
-     fullName:'Angel Campillo',
-     status:'A',
-     description:'ajcampillo07@gmail.com' 
-   },
-   { 
-     id:'2',
-     title:'423554368979',
-     status:'B',
-     description:'descripcion falla'  //tiene que ver con a orden
-   },
-   { 
-     id:'3',
-     title:'42355436568',
-     status:'C',
-     description:'descripcion falla 2'
-   },
-   { 
-     id:'4',
-     title:'42355436568',
-     status:'D',
-     description:'descripcion falla 3'
-   },
-  ];
+  private getList = () => {
+    
+    this.ordersService.getListOrders().subscribe({
+      next : (value) => {
+       this.listOrders = value;
+      }
+    });
+     
+  }
+
 
   public openModalNewTechnician = () => {
     this.handleModal();
@@ -74,5 +69,25 @@ export class ServicesComponent {
    return { 'background-color': stringToColor(text) }
 
   }
+
+  public search = (text:any) => {
+    this.filterText = text
+  } 
+
+  public filteredServices(): any[] {
+    return new ServicesFilterPipe().transform(this.listOrders, this.filterText);
+  }
+
+  public setStatus = (event:any) => {
+    this.tempText = event.target.value;
+    this.filterText = event.target.value + ','+ this.selectedDate.value
+  }
+
+  public setDateFilter = (event:any) => {
+   
+    this.selectedDate.setValue(event.target.value);
+    this.filterText = this.tempText +',' + event.target.value
+
+   }
 
 }

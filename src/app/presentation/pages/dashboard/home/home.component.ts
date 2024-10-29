@@ -2,13 +2,12 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 //components
-import { ModalOrdersComponent } from '../../../components/modals/modal-orders/modal-orders.component';
 import { HeaderComponent } from '../../../components/header/header.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ModalOrdersComponent, HeaderComponent],
+  imports: [HeaderComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -20,7 +19,7 @@ export class HomeComponent {
 
   public listModules = [
     {
-      title:'Servicios',
+      title:'Detalle de servicio',
       path:'servicios',
       img:'../../../../assets/service_toolbox.svg'
     },

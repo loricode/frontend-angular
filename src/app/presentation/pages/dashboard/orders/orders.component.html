@@ -23,29 +23,24 @@
       class="flex justify-center sm:justify-center md:justify-stretch items-center flex-wrap gap-2 pt-4"
     >
       @for (item of listOrders; track $index) {
-      <div
-        class="shadow-md overflow-hidden rounded-md p-2 card-item"
-      >
+      <div class="shadow-md overflow-hidden rounded-md p-2 card-item">
         <div class="flex gap-2 items-center justify-between">
           <div>
-            <p class="font-bold" title="{{ item.title }}">
-              {{ item.title }}
+            <p class="font-bold" title="{{ item.cliente }}">
+              {{ item.cliente }}
             </p>
             <div class="flex items-center justify-stretch gap-1">
-              <p class="text-sm font-semibold">{{ item.description }}</p>
+              <p class="text-sm font-semibold">{{ item.fecha_orden | date }}</p>
             </div>
           </div>
-          <div class="flex items-center justify-stretch gap-1">
+          <!-- <div class="flex items-center justify-stretch gap-1">
             <img
               (click)="handleModalOrder()"
               class="w-6 cursor-pointer"
               src="../../../../../assets/assignment_turned_in.svg"
               alt="In"
             />
-          </div>
-
-          
-
+          </div> -->
         </div>
       </div>
       }
@@ -80,12 +75,12 @@
                   class="flex-grow-1 text-xl sm:text-left font-semibold leading-6 text-gray-900"
                   id="modal-title"
                 >
-                {{ isCreate ? 'Crear' : 'Asignar' }} orden
+                  {{ isCreate ? "Crear" : "Asignar" }} orden
                 </h2>
 
                 <div>
                   <button
-                   (click)="handleModalOrder()"
+                    (click)="handleModalOrder()"
                     title="Cerrar"
                     class="bg-gray-200 px-3 py-3 hover:bg-gray-300 text-gray-800 font-bold rounded-full inline-flex items-center"
                   >
@@ -99,52 +94,46 @@
                     class="flex items-center justify-center flex-col gap-2"
                     [formGroup]="form"
                   >
-                  
-                   @if (isCreate) {
                     <div class="w-full">
-                    <input
-                     class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                     placeholder="Titulo"
-                     formControlName="titleField"
-                     required
-                   />
-                   </div>
+                      <textarea
+                        class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Descripción de la falla"
+                        formControlName="descriptionField"
+                        required
+                      ></textarea>
+                    </div>
 
-                   <div class="w-full">
-                   <textarea
-                   class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                   placeholder="Titulo"
-                   formControlName="descriptionField"
-                   required
-                 ></textarea>
-                 </div>
+                    <select formControlName="specialtyField" id="countries" class="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black focus:border-blue-500 block w-full p-3 dark:focus:ring-blue-500 ">
+                      <option selected value="">Seleccione: </option>
+                      <option value="aire acondicionado">Aire acondicionado</option>
+                      <option value="cuarto frio">Cuarto frio</option>
+                      <option value="nevera">Nevera</option>
+                      <option value="ventilador">ventilador</option>
+                    </select>
 
-                   } @else {
-                    <input
-                    disabled
-                    class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    [value]="orderDescription"
-                    required
-                  />
-                   }
-
+                    <div>
+                      <h2 class="text-2xl font-bold">Cliente</h2>
+                    </div>
+                    
+                    <form [formGroup]="formSearch">
                     <div class="w-full flex items-center justify-center gap-3">
                       <input
                         class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Identificación"
-                        formControlName="nameField"
+                        formControlName="identificationField"
                         required
                       />
 
                       <input
                         class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Nombre"
-                        formControlName="identificationField"
+                        formControlName="fullNameField"
                         required
                       />
 
                       <div>
                         <button
+                          (click)="searchCustomer()"
                           class="bg-blue-700 px-4 py-4 hover:bg-blue-800 text-gray-800 font-bold rounded-full inline-flex items-center"
                         >
                           <svg
@@ -165,31 +154,101 @@
                         </button>
                       </div>
                     </div>
+                    </form>
+
+                    <section
+                      class="gap-3 w-full pb-2 pt-2 flex justify-center sm:justify-center items-center flex-col"
+                    >
+                      <div
+                        class="shadow-md w-full rounded-md px-2 card-item-filter"
+                      >
+                        <div class="flex gap-2 items-start flex-col">
+                          <p
+                            class="text-sm font-bold"
+                            title="{{ customer.fullName }}"
+                          >
+                            Nombre: {{ customer.fullName }}
+                          </p>
+                         
+                            <p class="text-sm font-bold">
+                              Identificacion: {{ customer.identification }}
+                            </p>
+
+                            <p class="text-sm font-bold">
+                              Telefono: {{ customer.phone }}
+                            </p>
+                          
+                        </div>
+                      </div>
+                    </section>
 
                     <div>
                       <h2 class="text-2xl font-bold">Técnicos</h2>
                     </div>
+                     <form [formGroup]="formSearchTechnical">
+                    <div class="w-full flex items-center justify-center gap-3">
+                      <input
+                        class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Identificación"
+                        formControlName="identificationField"
+                        required
+                      />
+
+                      <input
+                        class="block w-full p-3 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Nombre"
+                        formControlName="fullNameField"
+                        required
+                      />
+
+                      <div>
+                        <button
+                          (click)="searchTechnical()"
+                          class="bg-blue-700 px-4 py-4 hover:bg-blue-800 text-gray-800 font-bold rounded-full inline-flex items-center"
+                        >
+                          <svg
+                            class="w-4 h-4 text-white dark:text-white"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                  
+                    </div>
+                    </form>
 
                     <section
-                      class="overflow-y-auto max-h-80 scroll-py-4 pt-48 gap-3 w-full pb-5 flex justify-center sm:justify-center items-center flex-col"
+                      class="overflow-y-auto max-h-80 scroll-py-4 scroll-pt-20 gap-3 w-full pb-5 flex justify-center sm:justify-center items-center flex-col"
                     >
                       @for (item of listTechnicians; track $index) {
-                      <div class="shadow-md w-full rounded-md px-2 card-item">
+                      <div
+                        class="shadow-md w-full rounded-md px-2 card-item-filter"
+                      >
                         <div class="flex gap-2 items-center justify-between">
                           <div class="flex gap-2 items-center">
                             <div
-                              [style]="getColorAvatar(item.fullName)"
+                              [style]="getColorAvatar(item.fullname)"
                               class="inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full"
                             >
                               <span
                                 class="font-medium text-gray-600 dark:text-gray-300"
-                                >{{ getStringAvatar(item.fullName) }}</span
+                                >{{ getStringAvatar(item.fullname) }}</span
                               >
                             </div>
 
                             <div>
-                              <p class="font-bold" title="{{ item.fullName }}">
-                                {{ item.fullName }}
+                              <p class="font-bold" title="{{ item.fullname }}">
+                                {{ item.fullname }}
                               </p>
                               <div
                                 class="flex items-center justify-stretch gap-1"
@@ -200,7 +259,7 @@
                                   alt="Id"
                                 />
                                 <p class="text-sm font-semibold">
-                                  {{ item.identification }}
+                                  {{ item.documento }}
                                 </p>
                               </div>
 
@@ -213,7 +272,7 @@
                                   alt="Tel"
                                 />
                                 <p class="text-sm font-semibold">
-                                  {{ item.phone }}
+                                  {{ item.telefono }}
                                 </p>
                               </div>
                             </div>
@@ -222,15 +281,18 @@
                           <div>
                             <div class="flex items-center">
                               <input
-                                checked
-                                id="checked-checkbox"
+                                [disabled]="
+                                  check === true && idChecked !== item.id
+                                "
+                                [checked]="check && idChecked === item.id"
+                                (click)="handleCheck(item)"
+                                id="checked"
                                 type="checkbox"
-                                value=""
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                               />
                               <label
                                 for="checked-checkbox"
-                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                class="ms-2 text-sm font-medium text-gray-900"
                                 >Asignado</label
                               >
                             </div>
@@ -239,6 +301,12 @@
                       </div>
                       }
                     </section>
+
+
+                    <div class="w-full bg-gray-50 py-3 sm:flex sm:flex-row-reverse sm:px-2">
+                      <button (click)="createOrder()" class="inline-flex w-full justify-center rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800  sm:w-auto">Guardar</button>
+                    </div>
+
                   </form>
                 </div>
               </div>

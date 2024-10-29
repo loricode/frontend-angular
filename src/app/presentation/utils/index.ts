@@ -20,6 +20,10 @@ export function stringToColor(string:string) {
 
 export function stringAvatar(text:string):string {
   
-   return text.split(' ')[0][0] + text.split(' ')[1][0]
+   if(!text.includes(' ')){
+    return text[0][0];
+   }
+
+   return text.split(' ')[0][0] + text.split(' ')[1][0];
    
 }

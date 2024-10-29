@@ -1,151 +1,160 @@
 import { Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 //components
 import { HeaderOptionComponent } from '../../../components/header-option/header-option.component';
 import { SearchComponent } from '../../../components/search/search.component';
 
+//services
+import { SystemsTechniciansService } from '../../../../data/systems-technicians/systems-technicians.service';
+
 //utils
 import { stringAvatar, stringToColor } from '../../../utils';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Technical } from '../../../../domain/interfaces/orders';
+//data
+import { TechnicalFilterPipe } from '../../../../data/filters/technical-filter.pipe';
 
 @Component({
   selector: 'app-systems-technicians',
   standalone: true,
-  imports: [ReactiveFormsModule, HeaderOptionComponent, SearchComponent],
+  imports: [ReactiveFormsModule, HeaderOptionComponent, SearchComponent, TechnicalFilterPipe],
   templateUrl: './systems-technicians.component.html',
-  styleUrl: './systems-technicians.component.css'
+  styleUrl: './systems-technicians.component.css',
 })
 export class SystemsTechniciansComponent {
-  
   isOpen = false;
   isOpenModalDelete = false;
-  description = "";
+  description = '';
   isUpdating = false;
+  idProcess = 0;
+  filterText = '';
 
+  private stService = inject(SystemsTechniciansService);
   private fb = inject(FormBuilder);
- 
-  form = this.fb.group({
-    'nameField': [''],
-    'nitField':[''],
-    'addressField':[''],
-    'emailField':[''],
-    'phoneField':['']
-  }) 
 
-  listTechnicians = [
-    { 
-     id:'1',
-     identification:'42355436',
-     fullName:'Angel Campillo',
-     phone:'3053228640',
-     address:'ciudad de la flores',
-     email:'ajcampillo07@gmail.com' 
-   },
-   { 
-     id:'2',
-     identification:'423554368979',
-     fullName:'Freddy Cuadrado',
-     phone:'3053228640',
-     address:'valle del cauca',
-     email:'ajcampillo07@gmail.com' 
-   },
-   { 
-     id:'3',
-     identification:'42355436568',
-     fullName:'Esteban Doria',
-     phone:'3053228640',
-     address:'cali',
-     email:'ajcampillo07@gmail.com' 
-   },
-   { 
-     id:'4',
-     identification:'42355436568',
-     fullName:'Felipe Cantillo',
-     phone:'3053228640',
-     address:'adasd',
-     email:'ajcampillo07@gmail.com' 
-   },
-   { 
-     id:'5',
-     identification:'42355436568',
-     fullName:'Itala Ayala',
-     phone:'3053228640',
-     address:'adasd',
-     email:'itala07@gmail.com' 
-   },
-   { 
-     id:'6',
-     identification:'42355436568',
-     fullName:'Jose Angel Campillo',
-     phone:'3053228640',
-     address:'sd',
-     email:'ajcampillo07@gmail.com' 
-   },
-  ];
+  form = this.fb.group({
+    nameField: [''],
+    nitField: [''],
+    addressField: [''],
+    emailField: [''],
+    phoneField: [''],
+  });
+
+  listTechnicians: Technical[] = [];
+
+  ngOnInit(): void {
+    this.getListAll();
+  }
+
+  private getListAll = () => {
+    this.stService.getListTechnical().subscribe({
+      next: (value) => {
+        this.listTechnicians = value;
+      },
+    });
+  };
+
+  public createOrUpdate = () => {
+    const { addressField, emailField, nameField, phoneField, nitField } =
+      this.form.value;
+
+    const objReq = {
+      documento: nitField,
+      fullname: nameField,
+      direccion: addressField,
+      email: emailField,
+      telefono: phoneField,
+      activo: true,
+    };
+
+    const objUpdate = {
+      ...objReq,
+      id: this.idProcess,
+    };
+
+    if (this.isUpdating) {
+      //si esta actualizando hago esto
+      this.stService.updateTechnical(this.idProcess, objUpdate).subscribe({
+        next: () => {
+          this.getListAll();
+        },
+        error: (err) => {},
+      });
+      this.form.reset();
+      this.isUpdating = false;
+    } else {
+      //si esta creado hago esto
+      this.stService.createTechnical(objReq).subscribe({
+        next: () => {
+          this.getListAll();
+        },
+        error: (err) => {},
+      });
+    }
+
+    this.handleModal();
+  };
 
   public openModalNewTechnician = () => {
     this.handleModal();
-  }
+  };
 
-  public edit = (item: any) => {
-
+  public edit = (id: number) => {
+    this.idProcess = id;
 
     this.isUpdating = true;
 
-    this.form.setValue({
-      nameField: item.fullName,
-      addressField: item.address,
-      nitField: item.identification,
-      emailField: item.email,
-      phoneField: item.phone,
+    this.stService.getTechnical(id).subscribe({
+      next: (value) => {
+       
+        this.form.setValue({
+          nameField: value.fullname,
+          addressField: value.direccion,
+          nitField: value.documento,
+          emailField: value.email,
+          phoneField: value.telefono
+        });
+      }
     });
 
     this.handleModal();
   };
 
-
-  public setDeleteRecocord = (item:any) => {
-
-
-    this.description  = item.fullName;
+  public setDeleteRecocord = (item: any) => {
+    this.idProcess = item.id;
+    this.description = item.fullname;
     this.isOpenModalDelete = true;
-    
-  }
+  };
 
   public deleteRecord = () => {
+    this.stService.deleteTechnical(this.idProcess).subscribe({
+      next: () => {
+        this.getListAll();
+      },
+    });
 
-   this.isOpenModalDelete = false;
-
-  }
-
-  public createOrUpdate = () => {
-
-    if(this.isUpdating){
-
-      //si esta actualizando hago esto
-
-      this.isUpdating = false;
-
-    }else{
-
-      //si esta creado hago esto
-
-
-    }
-
-  }
+    this.isOpenModalDelete = false;
+  };
 
   public handleModal = () => {
-   this.isOpen = !this.isOpen;
+    this.isOpen = !this.isOpen;
+  };
+
+  public getStringAvatar = (text: string) => {
+    return stringAvatar(text);
+  };
+
+  public getColorAvatar = (text: string) => {
+    return { 'background-color': stringToColor(text) };
+  };
+
+  //filtro del array
+  public search = (text:any) => {
+    this.filterText = text
+  } 
+
+  public filteredCustomers(): Technical[] {
+    return new TechnicalFilterPipe().transform(this.listTechnicians, this.filterText);
   }
 
-  public getStringAvatar = (text:string) => { 
-   return stringAvatar(text)
-
-  }
-
-  public getColorAvatar = (text:string) => { 
-   return { 'background-color': stringToColor(text) }
-
-  }
 }

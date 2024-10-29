@@ -10,161 +10,94 @@
       <div class="flex justify-center items-center gap-3">
         <form class="max-w-sm mx-auto">
           <select
-            id="countries"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+             [formControl]="selectStatus"
+             (input)="setStatus($event)"
+              id="countries"
+             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            <option selected>Seleccione: </option>
-            <option value="N">Nuevo</option>
-            <option value="A">Asignado</option>
-            <option value="FR">Cerrado</option>
+            <option >Seleccione:</option>
+            <option value="Nuevo">Nuevo</option>
+            <option selected value="Asignada">Asignada</option>
+            <option value="Cerrado">Cerrado</option>
           </select>
         </form>
 
         <div class="flex items-center justify-center bg-gray-100">
           <input
+            [formControl]="selectedDate"
+            (input)="setDateFilter($event)"
             type="date"
             class="border border-gray-300 rounded-lg p-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
-
-        <button
-          (click)="openModalNewTechnician()"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Buscar
-        </button>
+       
       </div>
     </div>
 
     <section
       class="flex justify-center sm:justify-center md:justify-stretch items-center flex-wrap gap-2 pt-4"
     >
-      @for (item of listTechnicians; track $index) {
-      <div
-        class="shadow-md overflow-hidden rounded-md p-2 card-item"
-      >
-        <div class="flex gap-2 items-center">
-          <div>
-            <p class="font-bold">
-              {{ item.title }}
-            </p>
-            <div class="flex items-center justify-stretch gap-1" title="{{ item.description }}">
-              <p class="text-sm font-semibold">{{ item.description }}</p>
-            </div>
-
-            <div class="flex items-center justify-stretch gap-1">
-              <img
-                class="w-4"
-                src="../../../../../assets/manage_history.svg"
-                alt="Tel"
-              />
-              <p class="text-sm font-semibold">
-                {{ item.status }}
-              </p>
-            </div>
-          </div>
-        </div>
+      <div class="relative overflow-x-auto">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="text-xs text-white uppercase bg-blue-800 dark:bg-blue-800 dark:text-white"
+          >
+            <tr>
+              <th scope="col" class="px-6 py-3">Fecha de registro</th>
+              <th scope="col" class="px-6 py-3">Cédula</th>
+              <th scope="col" class="px-6 py-3">Nombre cliente</th>
+              <th scope="col" class="px-6 py-3">Dirección</th>
+              <th scope="col" class="px-6 py-3">teléfono</th>
+              <th scope="col" class="px-6 py-3">Correo</th>
+              <th scope="col" class="px-6 py-3">Falla</th>
+              <th scope="col" class="px-6 py-3">técnico Asignado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (filteredServices().length > 0) {
+            @for (item of filteredServices(); track $index) {
+            <tr >
+              <th
+                scope="row"
+                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-black"
+              >
+                {{ item.fecha_orden | date}}
+              </th>
+              <td class="px-6 py-4 font-medium dark:text-black">
+                {{ item.documento_cliente }}
+              </td>
+              <td class="px-6 py-4 font-medium dark:text-black">
+                {{ item.cliente }}
+              </td>
+              <td class="px-6 py-4 font-medium dark:text-black">
+                {{ item.direccion }}
+              </td>
+              <td class="px-6 py-4 font-medium dark:text-black">
+                {{ item.phone}}
+              </td>
+              <td class="px-6 py-4 font-medium dark:text-black">
+                {{ item.email}}
+              </td>
+              <td class="px-6 py-4 font-medium dark:text-black">
+                {{ item.falla}}
+              </td>
+              <td class="px-6 py-4 font-medium dark:text-black">
+                {{ item.tecnicoAsignado }}
+              </td>
+            </tr>
+            } }@else {
+              <tr >
+                <td colspan="7">
+                  No hay registro, 
+              </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-      }
     </section>
   </div>
 
-  @if (isOpen) {
-  <div
-    class="relative z-10"
-    aria-labelledby="modal-title"
-    role="dialog"
-    aria-modal="true"
-  >
-    <div
-      class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-      aria-hidden="true"
-    ></div>
-
-    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-      <div
-        class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
-      >
-        <div
-          class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
-        >
-          <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-            <div>
-              <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                <h2
-                  class="text-base font-semibold leading-6 text-gray-900"
-                  id="modal-title"
-                >
-                  Datos del técnico
-                </h2>
-                <div class="mt-2">
-                  <form
-                    class="flex items-center justify-center flex-col gap-4"
-                    [formGroup]="form"
-                  >
-                    <div class="w-full">
-                      <input
-                        class="block w-full p-4 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Nombre"
-                        formControlName="nameField"
-                        required
-                      />
-                    </div>
-                    <div class="w-full">
-                      <input
-                        class="block w-full p-4 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Nit"
-                        formControlName="nitField"
-                        required
-                      />
-                    </div>
-                    <div class="w-full">
-                      <input
-                        class="block w-full p-4 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Dirección"
-                        formControlName="addressField"
-                        required
-                      />
-                    </div>
-                    <div class="w-full">
-                      <input
-                        class="block w-full p-4 ps-4 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Correo"
-                        formControlName="emailField"
-                        required
-                      />
-                    </div>
-                    <div class="w-full">
-                      <input
-                        class="block w-full p-4 ps-4 text-sm text-black border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Teléfono"
-                        formControlName="phoneField"
-                        required
-                      />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-            <button
-              type="submit"
-              class="inline-flex w-full justify-center rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 sm:ml-3 sm:w-auto"
-            >
-              Guardar
-            </button>
-            <button
-              (click)="handleModal()"
-              type="button"
-              class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-            >
-              Cancelar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  }
-</div>
+ 

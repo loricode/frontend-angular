@@ -10,18 +10,23 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 //services
 import { CustomerService } from '../../../../data/customer/customer.service';
+import { Customer } from '../../../../domain/interfaces/orders';
+
+import { CustomerFilterPipe } from '../../../../data/filters/customer-filter.pipe';
 
 @Component({
   selector: 'app-customer',
   standalone: true,
-  imports: [ReactiveFormsModule, HeaderOptionComponent, SearchComponent],
+  imports: [ReactiveFormsModule, HeaderOptionComponent, SearchComponent, CustomerFilterPipe],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.css',
 })
 export class CustomerComponent {
   isOpen = false;
   isOpenModalDelete = false;
+  idProcess = 0;
   description = "";
+  filterText = '';
   isUpdating = false;
   private fb = inject(FormBuilder);
   private customerService = inject(CustomerService);
@@ -34,70 +39,18 @@ export class CustomerComponent {
     phoneField: [''],
   });
 
-  listCustomers = [
-    {
-      id: '1',
-      identification: '42355436',
-      fullName: 'Angel Campillo',
-      address: '',
-      phone: '3053228640',
-      email: 'ajcampillo07@gmail.com',
-    },
-    {
-      id: '2',
-      identification: '423554368979',
-      fullName: 'Freddy Cuadrado',
-      address: 'Ciudad bonita',
-      phone: '3053228640',
-      email: 'ajcampillo07@gmail.com',
-    },
-    {
-      id: '3',
-      identification: '42355436568',
-      fullName: 'Esteban Doria',
-      address: 'valle dee cauca',
-      phone: '3053228640',
-      email: 'ajcampillo07@gmail.com',
-    },
-    {
-      id: '4',
-      identification: '42355436568',
-      fullName: 'Felipe Cantillo',
-      address: 'cali',
-      phone: '3053228640',
-      email: 'ajcampillo07@gmail.com',
-    },
-    {
-      id: '5',
-      identification: '42355436568',
-      fullName: 'Itala Ayala',
-      phone: '3053228640',
-      email: 'itala07@gmail.com',
-    },
-    {
-      id: '6',
-      identification: '42355436568',
-      fullName: 'Jose Angel Campillo',
-      phone: '3053228640',
-      email: 'ajcampillo07@gmail.com',
-    },
-  ];
+  listCustomers:Array<Customer> = [];
 
 
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //descomenta para llamar el listado de clientes
-   // this.getListAll()
+     this.getListAll();
   }
 
 
-  getListAll = () => {
-    //verficar si es post o get 
-    //al get no se le pasa objetos a la petición {}
-    this.customerService.getListCustomer({}).subscribe({
+  private getListAll = () => {
+    this.customerService.getListCustomers().subscribe({
       next: (value) => {
-        //aqui para lenar ls datos de los clientes
-        //this.listCustomers = value
+        this.listCustomers = value
       }
     })
   }
@@ -106,29 +59,42 @@ export class CustomerComponent {
     this.handleModal();
   };
 
-  public edit = (item: any) => {
+  public edit = (id:number) => {
 
     this.isUpdating = true;
-
-    this.form.setValue({
-      nameField: item.fullName,
-      addressField: item.address,
-      nitField: item.identification,
-      emailField: item.email,
-      phoneField: item.phone,
-    });
+    this.idProcess = id;
+    this.customerService.getCustomer(id).subscribe({
+      next: (value) => {
+       
+        this.form.setValue({
+          nameField: value.razon_social,
+          addressField: value.direccion,
+          nitField: value.documento,
+          emailField: value.email,
+          phoneField: value.telefono,
+        });
+      }
+    })
 
     this.handleModal();
   };
 
   public setDeleteRecocord = (item:any) => {
 
+    this.idProcess = item.id;
     this.description  = item.fullName;
     this.isOpenModalDelete = true;
     
   }
 
   public deleteRecord = () => {
+
+    this.customerService.deleteCustomer(this.idProcess).subscribe({
+      next: () => {
+
+        this.getListAll();
+      }
+    })
 
    this.isOpenModalDelete = false;
 
@@ -140,12 +106,26 @@ export class CustomerComponent {
 
   public createOrUpdate = () => {
 
-    if(this.isUpdating){
+    const { addressField, emailField, nameField, phoneField, nitField } = this.form.value;
 
+    const objReq = {
+      documento: nitField,
+      razon_social: nameField,
+      direccion: addressField,
+      email: emailField,
+      telefono: phoneField,
+      activo: true
+    };
+
+    const objUpdate = {
+      ...objReq, id:this.idProcess
+    }
+
+    if(this.isUpdating){
       //si esta actualizando hago esto
-      this.customerService.updateCustomer({}).subscribe({
+      this.customerService.updateCustomer(this.idProcess, objUpdate).subscribe({
         next : (value) => {
-            
+            this.getListAll();
         },
         error: (err) => {
             
@@ -157,9 +137,9 @@ export class CustomerComponent {
     }else{
 
       //si esta creado hago esto
-      this.customerService.createCustomer({}).subscribe({
-        next : (value) => {
-            
+      this.customerService.createCustomer(objReq).subscribe({
+        next: () => {
+          this.getListAll();
         },
         error: (err) => {
             
@@ -167,6 +147,8 @@ export class CustomerComponent {
       });
 
     }
+
+    this.handleModal();
 
   }
 
@@ -177,4 +159,14 @@ export class CustomerComponent {
   public getColorAvatar = (text: string) => {
     return { 'background-color': stringToColor(text) };
   };
+
+  //filtro del array
+  public search = (text:any) => {
+    this.filterText = text
+  }
+
+  public filteredCustomers(): Customer[] {
+    return new CustomerFilterPipe().transform(this.listCustomers, this.filterText);
+  }
+
 }

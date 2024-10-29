@@ -12,6 +12,9 @@
    width: 49.3%;
 }
 
+.card-item-filter{
+   width: 100%;
+}
 
 @media (max-width: 600px) {
    .card-item{

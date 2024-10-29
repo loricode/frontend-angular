@@ -8,7 +8,7 @@
        </div>
  
        <div class="flex justify-center items-center gap-3">
-         <app-search />
+         <app-search (eventOnchane)="search($event)" />
  
          <button
           (click)="openModalNewTechnician()"
@@ -22,42 +22,42 @@
      <section
        class="flex justify-center sm:justify-center md:justify-stretch items-center flex-wrap gap-2 pt-4"
      >
-       @for (item of listTechnicians; track $index) {
+       @for (item of filteredCustomers(); track $index) {
        <div
          class="shadow-md overflow-hidden rounded-md p-2 card-item"
        >
          <div class="flex gap-2 items-center">
            <div>
              <div
-               [style]="getColorAvatar(item.fullName)"
+               [style]="getColorAvatar(item.fullname)"
                class="inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full"
              >
                <span class="font-medium text-gray-600 dark:text-gray-300">{{
-                 getStringAvatar(item.fullName)
+                 getStringAvatar(item.fullname)
                }}</span>
              </div>
            </div>
  
            <div class="flex-1">
-             <p class="font-bold" title="{{ item.fullName }}">
-               {{ item.fullName }}
+             <p class="font-bold" title="{{ item.fullname }}">
+               {{ item.fullname }}
              </p>
              <div class="flex items-center justify-stretch gap-1">
                 <img class="w-4" src="../../../../../assets/id_card.svg" alt="Id" />
-                <p class="text-sm font-semibold">{{ item.identification }}</p>
+                <p class="text-sm font-semibold">{{ item.documento }}</p>
              </div>
          
              <div class="flex items-center justify-stretch gap-1">
                <img class="w-4" src="../../../../../assets/phone.svg" alt="Tel" />
                <p class="text-sm font-semibold">
-                {{ item.phone }}
+                {{ item.telefono }}
               </p>
              </div>
            </div>
 
            <div class="flex items-center justify-center gap-1 mr-1">
 
-            <div (click)="edit(item)" class="rounded-full hover:bg-slate-300 bg-slate-200 p-2">
+            <div (click)="edit(item.id)" class="rounded-full hover:bg-slate-300 bg-slate-200 p-2">
               <img src="../../../../../assets/edit.svg" alt="E">
             </div>
 
@@ -174,7 +174,7 @@
               </div>
             </div>
             <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-               <button type="submit" class="inline-flex w-full justify-center rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 sm:ml-3 sm:w-auto">Guardar</button>
+               <button (click)="createOrUpdate()" class="inline-flex w-full justify-center rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 sm:ml-3 sm:w-auto">Guardar</button>
                <button  (click)="handleModal()" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancelar</button>
                
             </div>
