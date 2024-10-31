@@ -134,6 +134,10 @@
                              formControlName="nameField"
                              required
                            />
+                           <div *ngIf="form.get('nameField')?.touched && form.get('nameField')?.errors">
+                            <small *ngIf="form.get('nameField')?.hasError('required')">El nombre es requerido.</small>
+                            <small *ngIf="form.get('nameField')?.hasError('minlength')">El nombre debe tener al menos 3 caracteres.</small>
+                          </div>
                          </div>
                          <div class="w-full">
                            <input
@@ -142,6 +146,10 @@
                              formControlName="nitField"
                              required
                            />
+                           <div *ngIf="form.get('nitField')?.touched && form.get('nitField')?.errors">
+                            <small *ngIf="form.get('nitField')?.hasError('required')">El nit es requerido.</small>
+                            <small *ngIf="form.get('nitField')?.hasError('pattern')">El nit debe ser numerico.</small>
+                          </div>
                          </div>
                          <div class="w-full">
                            <input
@@ -150,6 +158,10 @@
                              formControlName="addressField"
                              required
                            />
+                           <div *ngIf="form.get('addressField')?.touched && form.get('addressField')?.errors">
+                            <small *ngIf="form.get('addressField')?.hasError('required')">La direccióes requerida.</small>
+                            <small *ngIf="form.get('addressField')?.hasError('maxlength')">La dirección debe menor 100 caracteres.</small>
+                          </div>
                          </div>
                          <div class="w-full">
                            <input
@@ -158,6 +170,10 @@
                              formControlName="emailField"
                              required
                            />
+                           <div *ngIf="form.get('emailField')?.touched && form.get('emailField')?.errors">
+                            <small *ngIf="form.get('emailField')?.hasError('required')">El correo es requerido.</small>
+                            <small *ngIf="form.get('emailField')?.hasError('email')">Escriba un correo válido.</small>
+                          </div>
                          </div>
                          <div class="w-full">
                            <input
@@ -166,6 +182,10 @@
                              formControlName="phoneField"
                              required
                            />
+                           <div *ngIf="form.get('phoneField')?.touched && form.get('phoneField')?.errors">
+                            <small *ngIf="form.get('phoneField')?.hasError('required')">El Teléfono es requerido.</small>
+                            <small *ngIf="form.get('phoneField')?.hasError('pattern')">Escriba un teléfono válido.</small>
+                          </div>
                          </div>
                          
                         </form>
@@ -174,9 +194,10 @@
               </div>
             </div>
             <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-               <button (click)="createOrUpdate()" class="inline-flex w-full justify-center rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 sm:ml-3 sm:w-auto">Guardar</button>
-               <button  (click)="handleModal()" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancelar</button>
-               
+               <button [disabled]="!form.valid" (click)="createOrUpdate()"
+              
+               class="inline-flex w-full justify-center rounded-md disabled:bg-slate-600 disabled:cursor-not-allowed bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 sm:ml-3 sm:w-auto">Guardar</button>
+               <button (click)="handleModal()" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancelar</button>
             </div>
           </div>
         </div>

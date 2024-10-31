@@ -128,11 +128,24 @@ export class OrdersComponent {
   };
 
   public createOrder = () => {
+
     const { descriptionField, specialtyField } = this.form.value;
     const { identification } = this.customer;
 
-    //es el id del tecnico seleccionado con el check
-    this.idChecked;
+    if(!identification){
+      this.toastr.warning('La identificación es requerida', 'Complete la información');
+      return;
+    }
+
+    if(!descriptionField){
+      this.toastr.warning('La descripción es requerida', 'Complete la información' );
+      return;
+    }
+
+    if(!specialtyField){
+      this.toastr.warning('La especialidad es requerida', 'Complete la información');
+      return;
+    }
 
     const objReq = {
       nit: identification,

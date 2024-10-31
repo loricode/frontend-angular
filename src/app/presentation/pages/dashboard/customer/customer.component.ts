@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { NgIf } from '@angular/common';
 
 //components
 import { HeaderOptionComponent } from '../../../components/header-option/header-option.component';
@@ -6,7 +7,7 @@ import { SearchComponent } from '../../../components/search/search.component';
 
 //utils
 import { stringAvatar, stringToColor } from '../../../utils';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators  } from '@angular/forms';
 
 //services
 import { CustomerService } from '../../../../data/customer/customer.service';
@@ -14,10 +15,11 @@ import { Customer } from '../../../../domain/interfaces/orders';
 
 import { CustomerFilterPipe } from '../../../../data/filters/customer-filter.pipe';
 
+
 @Component({
   selector: 'app-customer',
   standalone: true,
-  imports: [ReactiveFormsModule, HeaderOptionComponent, SearchComponent, CustomerFilterPipe],
+  imports: [ReactiveFormsModule, NgIf, HeaderOptionComponent, SearchComponent, CustomerFilterPipe],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.css',
 })
@@ -32,11 +34,11 @@ export class CustomerComponent {
   private customerService = inject(CustomerService);
 
   form = this.fb.group({
-    nameField: [''],
-    nitField: [''],
-    addressField: [''],
-    emailField: [''],
-    phoneField: [''],
+    nameField: ['', [Validators.required, Validators.minLength(3)]],
+    nitField: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+    addressField: ['', [Validators.required, Validators.maxLength(100)]],
+    emailField: ['', [Validators.required, Validators.email]],
+    phoneField: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
   });
 
   listCustomers:Array<Customer> = [];
@@ -106,6 +108,8 @@ export class CustomerComponent {
 
   public createOrUpdate = () => {
 
+    if(this.form.invalid) return;
+    
     const { addressField, emailField, nameField, phoneField, nitField } = this.form.value;
 
     const objReq = {

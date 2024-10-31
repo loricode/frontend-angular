@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 //components
 import { HeaderOptionComponent } from '../../../components/header-option/header-option.component';
@@ -14,10 +15,11 @@ import { Technical } from '../../../../domain/interfaces/orders';
 //data
 import { TechnicalFilterPipe } from '../../../../data/filters/technical-filter.pipe';
 
+
 @Component({
   selector: 'app-systems-technicians',
   standalone: true,
-  imports: [ReactiveFormsModule, HeaderOptionComponent, SearchComponent, TechnicalFilterPipe],
+  imports: [ReactiveFormsModule, NgIf, HeaderOptionComponent, SearchComponent, TechnicalFilterPipe],
   templateUrl: './systems-technicians.component.html',
   styleUrl: './systems-technicians.component.css',
 })
@@ -33,11 +35,11 @@ export class SystemsTechniciansComponent {
   private fb = inject(FormBuilder);
 
   form = this.fb.group({
-    nameField: [''],
-    nitField: [''],
-    addressField: [''],
-    emailField: [''],
-    phoneField: [''],
+    nameField: ['', [Validators.required, Validators.minLength(3)]],
+    nitField: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+    addressField: ['', [Validators.required, Validators.maxLength(100)]],
+    emailField: ['', [Validators.required, Validators.email]],
+    phoneField: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
   });
 
   listTechnicians: Technical[] = [];
@@ -55,6 +57,9 @@ export class SystemsTechniciansComponent {
   };
 
   public createOrUpdate = () => {
+
+    if(this.form.invalid) return;
+    
     const { addressField, emailField, nameField, phoneField, nitField } =
       this.form.value;
 
