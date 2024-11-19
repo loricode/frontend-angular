@@ -8,7 +8,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, SidenavComponent, FooterComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

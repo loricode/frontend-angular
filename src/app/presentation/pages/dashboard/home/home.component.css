@@ -2,6 +2,21 @@
    flex-grow: 1;
 }
 
+
+.home-container{
+   display: flex;
+   min-height: calc(100dvh - 60px);
+}
+
+.menu-right {
+  background-color: rgb(255, 255, 255);
+  box-shadow: inset;
+  min-width: 320px;
+  height: 100%;
+  box-shadow: 2px 0px 0px rgb(232, 231, 231);
+  min-height: calc(100dvh - 60px);
+}
+
 .title-module{
    @apply mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-800;
 }

@@ -19,7 +19,7 @@ import { TechnicalFilterPipe } from '../../../../data/filters/technical-filter.p
 @Component({
   selector: 'app-systems-technicians',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, HeaderOptionComponent, SearchComponent, TechnicalFilterPipe],
+  imports: [ReactiveFormsModule, NgIf, HeaderOptionComponent, SearchComponent],
   templateUrl: './systems-technicians.component.html',
   styleUrl: './systems-technicians.component.css',
 })

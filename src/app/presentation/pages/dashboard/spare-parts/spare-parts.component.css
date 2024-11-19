@@ -1,0 +1,5 @@
+.container-option {
+   max-width: 1080px;
+   flex-basis: 100%;
+   padding: 4px;
+}

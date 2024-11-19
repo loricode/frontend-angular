@@ -37,7 +37,13 @@ export class HomeComponent {
       title:'Ordenes',
       path:'ordenes',
       img:'../../../../assets/orders.svg'
-    }];
+    },
+    {
+      title:'Repuestos',
+      path:'repuestos',
+      img:'../../../../assets/home_repair_service.svg'
+    }
+  ];
 
   public goModule = (path:string) => {
 

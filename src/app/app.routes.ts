@@ -6,6 +6,7 @@ import { OrdersComponent } from './presentation/pages/dashboard/orders/orders.co
 import { CustomerComponent } from './presentation/pages/dashboard/customer/customer.component';
 import { SystemsTechniciansComponent } from './presentation/pages/dashboard/systems-technicians/systems-technicians.component';
 import { ServicesComponent } from './presentation/pages/dashboard/services/services.component';
+import { SparePartsComponent } from './presentation/pages/dashboard/spare-parts/spare-parts.component';
 
 //auth
 import { LoginComponent } from './presentation/pages/auth/login/login.component';
@@ -44,6 +45,10 @@ export const routes: Routes = [
       {
         path: 'tecnicos',
         component: SystemsTechniciansComponent,
+      },
+      {
+        path: 'repuestos',
+        component: SparePartsComponent,
       },
     ],
   },
