@@ -17,6 +17,11 @@
   min-height: calc(100dvh - 60px);
 }
 
+.page-home{
+   overflow-y: auto;
+   max-height: calc(100dvh - 60px);
+}
+
 .title-module{
    @apply mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-800;
 }
