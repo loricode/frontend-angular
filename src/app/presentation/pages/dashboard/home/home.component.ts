@@ -39,7 +39,7 @@ export class HomeComponent {
       img:'../../../../assets/orders.svg'
     },
     {
-      title:'Repuestos',
+      title:'Cierre de orden',
       path:'repuestos',
       img:'../../../../assets/home_repair_service.svg'
     }
