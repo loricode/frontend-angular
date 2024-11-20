@@ -113,7 +113,7 @@
                 {{ item.quantity }}
               </td>
               <td class="px-6 py-4 font-medium dark:text-black">
-                {{ item.price}}
+                {{ item.price | currency}}
               </td>
               <td class="py-3 flex items-center justify-center font-medium dark:text-black">
                <div (click)="deleteSparePart(item)" class="rounded-full flex items-center justify-center hover:bg-slate-300 bg-slate-200 p-2 w-12">
